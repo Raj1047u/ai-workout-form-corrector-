@@ -1,4 +1,9 @@
-# AI Workout Form Corrector
+# Create additional utility files and documentation
+
+import os
+
+# Create a comprehensive README file
+readme_content = '''# AI Workout Form Corrector
 
 A comprehensive real-time exercise form analysis system using computer vision and machine learning, built according to the academic research specifications from Chandigarh Engineering College.
 
@@ -215,3 +220,264 @@ For technical support or research collaboration inquiries, please refer to the a
 ---
 
 **Note**: This application is designed for fitness guidance and educational purposes. It is not intended as a substitute for professional medical advice or physical therapy. Users with pre-existing conditions should consult healthcare professionals before beginning any exercise program.
+'''
+
+with open("README.md", "w") as f:
+    f.write(readme_content)
+
+# Create a setup script
+setup_script = '''#!/usr/bin/env python3
+"""
+Setup script for AI Workout Form Corrector
+Handles installation and initial configuration
+"""
+
+import subprocess
+import sys
+import os
+import pkg_resources
+
+def check_python_version():
+    """Check if Python version is compatible"""
+    if sys.version_info < (3, 9):
+        print("❌ Python 3.9 or higher is required")
+        print(f"Current version: {sys.version}")
+        sys.exit(1)
+    else:
+        print(f"✅ Python version {sys.version.split()[0]} is compatible")
+
+def install_requirements():
+    """Install required packages"""
+    try:
+        print("📦 Installing required packages...")
+        subprocess.check_call([sys.executable, "-m", "pip", "install", "-r", "requirements.txt"])
+        print("✅ All packages installed successfully")
+    except subprocess.CalledProcessError as e:
+        print(f"❌ Failed to install requirements: {e}")
+        sys.exit(1)
+
+def verify_camera_access():
+    """Test camera access"""
+    try:
+        import cv2
+        print("📹 Testing camera access...")
+        cap = cv2.VideoCapture(0)
+        if cap.isOpened():
+            print("✅ Camera access confirmed")
+            cap.release()
+        else:
+            print("⚠️  Camera not accessible - check permissions")
+    except ImportError:
+        print("⚠️  OpenCV not installed - run installation first")
+
+def create_directories():
+    """Create necessary directories"""
+    dirs = ['models', 'data', 'exports']
+    for dir_name in dirs:
+        if not os.path.exists(dir_name):
+            os.makedirs(dir_name)
+            print(f"📁 Created directory: {dir_name}")
+
+def main():
+    """Main setup function"""
+    print("🚀 AI Workout Form Corrector Setup")
+    print("=" * 40)
+    
+    check_python_version()
+    install_requirements()
+    create_directories()
+    verify_camera_access()
+    
+    print("\\n🎉 Setup completed successfully!")
+    print("\\nTo run the application:")
+    print("  Basic version: python ai_workout_form_corrector.py")
+    print("  ML version:    python ai_workout_form_corrector_ml.py")
+
+if __name__ == "__main__":
+    main()
+'''
+
+with open("setup.py", "w") as f:
+    f.write(setup_script)
+
+# Make setup script executable (Unix-like systems)
+try:
+    os.chmod("setup.py", 0o755)
+except:
+    pass  # Windows doesn't need this
+
+# Create a configuration file template
+config_template = '''{
+    "mediapipe_settings": {
+        "min_detection_confidence": 0.7,
+        "min_tracking_confidence": 0.7,
+        "model_complexity": 1
+    },
+    "exercise_thresholds": {
+        "squat": {
+            "depth_angle": 100,
+            "back_angle": 80,
+            "stage_transition": 120
+        },
+        "pushup": {
+            "elbow_angle": 95,
+            "body_alignment": 160,
+            "stage_transition": 140
+        },
+        "lunge": {
+            "knee_angle": 110,
+            "knee_position_tolerance": 50,
+            "stage_transition": 140
+        }
+    },
+    "ui_settings": {
+        "video_width": 640,
+        "video_height": 480,
+        "update_interval": 15,
+        "theme": "dark"
+    },
+    "ml_settings": {
+        "model_type": "RandomForest",
+        "n_estimators": 100,
+        "feature_count": 15,
+        "training_split": 0.8
+    }
+}'''
+
+with open("config.json", "w") as f:
+    f.write(config_template)
+
+# Create a simple test script
+test_script = '''#!/usr/bin/env python3
+"""
+Test script for AI Workout Form Corrector
+Verifies that all components are working correctly
+"""
+
+import sys
+import cv2
+import numpy as np
+
+def test_imports():
+    """Test if all required packages can be imported"""
+    print("🧪 Testing package imports...")
+    
+    try:
+        import cv2
+        print("✅ OpenCV imported successfully")
+    except ImportError as e:
+        print(f"❌ OpenCV import failed: {e}")
+        return False
+    
+    try:
+        import mediapipe as mp
+        print("✅ MediaPipe imported successfully")
+    except ImportError as e:
+        print(f"❌ MediaPipe import failed: {e}")
+        return False
+    
+    try:
+        import numpy as np
+        print("✅ NumPy imported successfully")
+    except ImportError as e:
+        print(f"❌ NumPy import failed: {e}")
+        return False
+    
+    try:
+        import tkinter as tk
+        print("✅ Tkinter imported successfully")
+    except ImportError as e:
+        print(f"❌ Tkinter import failed: {e}")
+        return False
+        
+    return True
+
+def test_camera():
+    """Test camera functionality"""
+    print("\\n📹 Testing camera functionality...")
+    
+    try:
+        cap = cv2.VideoCapture(0)
+        if not cap.isOpened():
+            print("❌ Cannot open camera")
+            return False
+        
+        ret, frame = cap.read()
+        if not ret:
+            print("❌ Cannot read from camera")
+            cap.release()
+            return False
+        
+        print(f"✅ Camera working - Frame size: {frame.shape}")
+        cap.release()
+        return True
+        
+    except Exception as e:
+        print(f"❌ Camera test failed: {e}")
+        return False
+
+def test_mediapipe():
+    """Test MediaPipe pose estimation"""
+    print("\\n🤖 Testing MediaPipe pose estimation...")
+    
+    try:
+        import mediapipe as mp
+        
+        mp_pose = mp.solutions.pose
+        pose = mp_pose.Pose(
+            min_detection_confidence=0.5,
+            min_tracking_confidence=0.5
+        )
+        
+        # Create a dummy image
+        dummy_image = np.zeros((480, 640, 3), dtype=np.uint8)
+        results = pose.process(dummy_image)
+        
+        print("✅ MediaPipe pose estimation initialized")
+        pose.close()
+        return True
+        
+    except Exception as e:
+        print(f"❌ MediaPipe test failed: {e}")
+        return False
+
+def main():
+    """Run all tests"""
+    print("🧪 AI Workout Form Corrector - Component Tests")
+    print("=" * 50)
+    
+    tests = [
+        ("Package Imports", test_imports),
+        ("Camera Access", test_camera),
+        ("MediaPipe Pose", test_mediapipe)
+    ]
+    
+    passed = 0
+    total = len(tests)
+    
+    for test_name, test_func in tests:
+        print(f"\\n--- {test_name} ---")
+        if test_func():
+            passed += 1
+    
+    print(f"\\n📊 Test Results: {passed}/{total} tests passed")
+    
+    if passed == total:
+        print("🎉 All tests passed! System is ready.")
+        return 0
+    else:
+        print("❌ Some tests failed. Check the setup.")
+        return 1
+
+if __name__ == "__main__":
+    sys.exit(main())
+'''
+
+with open("test_system.py", "w") as f:
+    f.write(test_script)
+
+print("✅ Created documentation and setup files:")
+print("  - README.md")
+print("  - setup.py") 
+print("  - config.json")
+print("  - test_system.py")

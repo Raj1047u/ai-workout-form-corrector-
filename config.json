@@ -1,0 +1,36 @@
+{
+    "mediapipe_settings": {
+        "min_detection_confidence": 0.7,
+        "min_tracking_confidence": 0.7,
+        "model_complexity": 1
+    },
+    "exercise_thresholds": {
+        "squat": {
+            "depth_angle": 100,
+            "back_angle": 80,
+            "stage_transition": 120
+        },
+        "pushup": {
+            "elbow_angle": 95,
+            "body_alignment": 160,
+            "stage_transition": 140
+        },
+        "lunge": {
+            "knee_angle": 110,
+            "knee_position_tolerance": 50,
+            "stage_transition": 140
+        }
+    },
+    "ui_settings": {
+        "video_width": 640,
+        "video_height": 480,
+        "update_interval": 15,
+        "theme": "dark"
+    },
+    "ml_settings": {
+        "model_type": "RandomForest",
+        "n_estimators": 100,
+        "feature_count": 15,
+        "training_split": 0.8
+    }
+}
